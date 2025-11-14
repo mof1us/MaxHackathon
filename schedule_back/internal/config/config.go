@@ -4,7 +4,6 @@ import (
 	"flag"
 	"os"
 
-	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
 )
 
@@ -42,18 +41,23 @@ func fetchConfigPath() string {
 
 func MustLoad() *Config {
 	_ = godotenv.Load()
-
-	path := fetchConfigPath()
-	if path == "" {
-		panic("config path is not provided")
+	dbConfig := DBConfig{
+		Host:     os.Getenv("DB_HOST"),
+		Name:     os.Getenv("DB_NAME"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
+		Port:     os.Getenv("DB_PORT"),
+		Driver:   os.Getenv("DB_DRIVER"),
 	}
-	var cfg Config
-
-	if err := cleanenv.ReadConfig(path, &cfg); err != nil {
-		panic(err)
+	httpConfig := HTTP{
+		Port: os.Getenv("HTTP_PORT"),
+		Host: os.Getenv("HTTP_HOST"),
 	}
-	if err := cleanenv.UpdateEnv(&cfg); err != nil {
-		panic(err)
+	cfg := Config{
+		Env:   os.Getenv("ENVIRONMENT"),
+		HTTPS: httpConfig,
+		DB:    dbConfig,
 	}
 
 	return &cfg
