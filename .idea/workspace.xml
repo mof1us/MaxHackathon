@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="47d8ab11-bf9c-4e68-8e4b-1d3404f794f6" name="Changes" comment="Перенос всех сервисов в монореп + настройка docker-compose.yml">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="47d8ab11-bf9c-4e68-8e4b-1d3404f794f6" name="Changes" comment="fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/docker-compose.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/internal/inits/db/conectToDB.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/inits/db/conectToDB.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/internal/repo/postgres/SceduleRepo.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/repo/postgres/SceduleRepo.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/schedule_back/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/internal/transport/https/hendler.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/transport/https/hendler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/internal/transport/https/router.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/transport/https/router.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -264,7 +256,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update" />
     <MESSAGE value="Перенос всех сервисов в монореп + настройка docker-compose.yml" />
-    <option name="LAST_COMMIT_MESSAGE" value="Перенос всех сервисов в монореп + настройка docker-compose.yml" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>
