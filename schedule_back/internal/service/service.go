@@ -79,7 +79,25 @@ func (s *scheduleService) ResolveScheduleList(universityID uint, name string, li
 // ---------- публичный метод ----------
 func (s *scheduleService) GetOrGenerateToken(scheduleID uint, weekStart time.Time, flag string) (domain.Token, error) {
 	start, end := boundsOfWeekUTC(weekStart)
-	hash := weekHash(scheduleID, start, flag)
+	//hash := weekHash(scheduleID, start, flag)
+	var hash string
+	if flag == "week" {
+		hash = weekHash(scheduleID, start, flag)
+
+	} else if flag == "day" {
+		dayStart := time.Date(
+			weekStart.Year(), weekStart.Month(), weekStart.Day(),
+			0, 0, 0, 0, time.UTC,
+		)
+		hash = dayHash(scheduleID, dayStart)
+
+		start = dayStart
+		end = dayStart.Add(24 * time.Hour).Add(-time.Nanosecond)
+
+	} else {
+		return domain.Token{}, errors.New("invalid flag")
+	}
+
 	// 1) проверяем БД
 	if existing, err := s.tokens.GetByID(hash); err == nil {
 		return *existing, nil
@@ -153,6 +171,12 @@ func boundsOfWeekUTC(ts time.Time) (time.Time, time.Time) {
 
 func weekHash(scheduleID uint, mondayUTC time.Time, flag string) string {
 	key := fmt.Sprintf("%d:%s:%s", scheduleID, mondayUTC.Format("2006-01-02"), flag)
+	sum := sha256.Sum256([]byte(key))
+	return hex.EncodeToString(sum[:])
+}
+
+func dayHash(scheduleID uint, day time.Time) string {
+	key := fmt.Sprintf("day:%d:%s", scheduleID, day.Format("2006-01-02"))
 	sum := sha256.Sum256([]byte(key))
 	return hex.EncodeToString(sum[:])
 }
