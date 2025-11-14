@@ -35,7 +35,7 @@ services:
 
   max-schedule-backend:
     build:
-      context: schedule_backend
+      context: schedule_backe
       dockerfile: schedule_backend/Dockerfile
       pull: true
     environment:
