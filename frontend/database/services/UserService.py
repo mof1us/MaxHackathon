@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 user = os.getenv("DB_USER")
 password = os.getenv("DB_PASS")
+host = os.getenv("DB_HOST")
+port = os.getenv("DB_PORT")
 
 
 class UserService:
@@ -16,8 +18,8 @@ class UserService:
             dbname="max_bot",
             user=user,
             password=password,
-            host="localhost",
-            port=5432,
+            host=host,
+            port=port,
         )
         self.__user_repo = UserRepository()
         self.__initializate_database()

@@ -1,0 +1,8 @@
+version: "3"
+services:
+  image-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      pull: true
+    ports: ["8001:8001"]

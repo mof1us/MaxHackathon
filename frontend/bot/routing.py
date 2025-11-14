@@ -38,6 +38,10 @@ import random
 from database.entities.UserMenuEntity import UserMenuEntity
 from database.services.UserService import UserService
 
+from bot.api.schedule_api import get_schedule_token
+
+from bot.api.schedule_api import get_schedule_list
+
 logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
@@ -192,26 +196,31 @@ async def message_callback(event: MessageCallback):
         print("^" * 20 + "Parse exception" + "^" * 20)
     if payload["type"] == "schedule_list":
         answer_payloads = [schedule_list(
-            schedules=[
-                Schedule(id=0, name="Расписание 1"),
-                Schedule(id=1, name="Расписание 2"),
-                Schedule(id=2, name="Расписание 3"),
-                Schedule(id=3, name="Расписание 4"),
-                Schedule(id=4, name="Расписание 5"),
-                Schedule(id=5, name="Расписание 6"),
-                Schedule(id=6, name="Расписание 7"),
-                Schedule(id=7, name="Расписание 8"),
-            ],
+            schedules=await get_schedule_list(event.callback.user.user_id),
+            # schedules=[
+            #     Schedule(id=0, name="Расписание 1"),
+            #     Schedule(id=1, name="Расписание 2"),
+            #     Schedule(id=2, name="Расписание 3"),
+            #     Schedule(id=3, name="Расписание 4"),
+            #     Schedule(id=4, name="Расписание 5"),
+            #     Schedule(id=5, name="Расписание 6"),
+            #     Schedule(id=6, name="Расписание 7"),
+            #     Schedule(id=7, name="Расписание 8"),
+            # ],
             page=int(payload.get("page", 0)),
         )]
     elif payload["type"] == "schedule_display":
+        schedule_id = int(payload["s_id"])
+        logging.info(f"{schedule_id} {datetime.fromisoformat(payload["c_date"]).isoformat()+ "Z"}")
+        picture_token = await get_schedule_token(schedule_id, datetime.fromisoformat(payload["c_date"]))
+
         answer_payloads = [schedule_display(
-            schedule_id=int(payload["s_id"]),
+            schedule_id=schedule_id,
             current_date=datetime.fromisoformat(payload["c_date"]),
         ), {
             "type": "image",
             "payload": {
-                "token": "XPHZIEWVtMLTAYIDimeKs6fgfcm8fm6TM5DxIjZnGIXAxE5K9+Gbf6yVvfHeRBunrj2E76kCVv90VyAQ/bz5dj6BmnIOMoMof5Hh9Zf3//X13ah2JIsPs30/qY4l9UOx2ZW5SqU3n9XfRYinQhBgE8J17uwQEzQG"
+                "token": picture_token
             }
         }]
         answer_text = f"Date {payload['c_date']}"

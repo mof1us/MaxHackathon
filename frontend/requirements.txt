@@ -1,5 +1,8 @@
-maxapi
+aiohttp
 dotenv
 fastapi
 uvicorn
 psycopg2
+magic_filter
+puremagic
+aiofiles

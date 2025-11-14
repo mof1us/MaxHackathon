@@ -1,0 +1,7 @@
+pydantic
+jinja2
+html2image
+fastapi
+uvicorn
+aiohttp
+dotenv
