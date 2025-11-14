@@ -1,3 +1,5 @@
+#TODO убрать все порты наружу.
+
 version: "3.8"
 services:
   postgresDatabase:
@@ -35,17 +37,21 @@ services:
 
   max-schedule-backend:
     build:
-      context: schedule_backe
-      dockerfile: schedule_backend/Dockerfile
+      context: schedule_back
+      dockerfile: Dockerfile
       pull: true
     environment:
-      CONFIG_PATH: /config/prod/prod.yaml
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: PR9eZEXG2xERfpfq
       DB_NAME: max_schedule
       DB_SSLMODE: disable
+      DB_DRIVER: postgres
+      HTTP_PORT: 8010
+      HTTP_HOST: 0.0.0.0
+      defaultGenURLWeek: http://image-generator:8000/generate_week_schedule
+      defaultGenURLDay: http://image-generator:8000/generate_day_schedule
     ports:
       - "8010:8010"
     networks:
@@ -64,6 +70,8 @@ services:
       bot-network:
         aliases:
           - image-generator
+    ports:
+      - "8000:8000"
 
   max-universities-backend:
     build:
@@ -79,6 +87,8 @@ services:
       bot-network:
         aliases:
           - university_backend
+    ports:
+      - "9000:8001"
 
 networks:
   bot-network:

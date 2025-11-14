@@ -1,6 +1,7 @@
 import aiohttp
 from fastapi import FastAPI
 from application.ScreenShoter import ScreenShooter
+from application.responses.DayScheduleGenerationRequest import DayScheduleGenerationRequest
 from application.responses.WeekScheduleGeneratorRequest import WeekScheduleGeneratorRequest
 import os
 from dotenv import load_dotenv
@@ -46,7 +47,15 @@ class Application:
     def setup_routes(self):
         @self.app.post("/generate_week_schedule")
         async def generate_week_schedule(response: WeekScheduleGeneratorRequest):
-            filename = self.screen_shooter.make_screenshot(response)
+            filename = self.screen_shooter.make_week_screenshot(response)
+            max_image_token = await upload_image(filename)
+            return {
+                "token": max_image_token
+            }
+
+        @self.app.post("/generate_day_schedule")
+        async def generate_day_schedule(response: DayScheduleGenerationRequest):
+            filename = self.screen_shooter.make_day_screenshot(response)
             max_image_token = await upload_image(filename)
             return {
                 "token": max_image_token

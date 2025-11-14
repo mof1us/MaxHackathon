@@ -38,7 +38,8 @@ import random
 from database.entities.UserMenuEntity import UserMenuEntity
 from database.services.UserService import UserService
 
-from bot.api.schedule_api import get_schedule_token
+from bot.api.schedule_api import get_schedule_token, search_university, add_schedule_from_ics, create_university, \
+    search_schedule_university
 
 from bot.api.schedule_api import get_schedule_list
 
@@ -92,6 +93,7 @@ async def upload_callback(event: MessageCreated):
         ):
             await event.message.answer("Пожалуйста, загрузите ICS файл")
             return
+
         ret_menu = schedule_add_search_steps()
         update_user(
             UserMenuEntity(
@@ -100,7 +102,7 @@ async def upload_callback(event: MessageCreated):
                 metadata={"ics_url": att.payload.url},
             )
         )
-        await event.message.answer("Какой-то умный текст", attachments=[ret_menu])
+        await event.message.answer("Введите название университета", attachments=[ret_menu])
 
         print("-" * 10)
         print(att.payload.url)
@@ -125,17 +127,23 @@ async def text_callback(event: MessageCreated):
         if q is None:
             q = ""
         print(q)
-        # Search logic
+        # TODO Search logic
+
+        universities_by_query = await search_university(event.message.body.text)
+
         ret_menu = schedule_add_search_steps(
+            search_results=universities_by_query,
             search_q=q if q is not None else "", addition_allowed=True
         )
-        await event.message.answer("Какой-то умный текст", attachments=[ret_menu])
+        await event.message.answer("Выберите ваш университет из списка (или используйте как новый)", attachments=[ret_menu])
         return
     if u_state.position == "schedule_add_from_ics_name_step":
         q = event.message.body.text
-        print(q)
         await event.message.answer("Добавляем расписание...")
         # Logic here
+        user = usrv.get_user(event.message.recipient.chat_id)
+        await add_schedule_from_ics(user.metadata["ics_url"], q, event.from_user.user_id, user.metadata["university_id"])
+
         s_id = 0
         ret_menu = schedule_display(
             schedule_id=int(s_id),
@@ -157,24 +165,25 @@ async def text_callback(event: MessageCreated):
         q = event.message.body.text
         print(q)
         # Search logic
-
+        unis = await search_university(q)
         ret_menu = schedule_add_search_steps(
-            search_q=q if q is not None else "", search_results=[("М-да", "1")]
+            search_q=q if q is not None else "", search_results=unis
         )
         await event.message.answer(
-            "Они надеялись найти ВУЗы...", attachments=[ret_menu]
+            "Выберите университет", attachments=[ret_menu]
         )
         return
     if u_state.position == "schedule_add_from_std_name_search":
         q = event.message.body.text
         print(q)
         # Search logic
-
+        u = usrv.get_user(event.message.recipient.chat_id)
+        schedules = await search_schedule_university(u.metadata["university_id"], q)
         ret_menu = schedule_add_search_steps(
-            search_q=q if q is not None else "", search_results=[("М-да", "1")]
+            search_q=q if q is not None else "", search_results=schedules
         )
         await event.message.answer(
-            "Они надеялись найти Расписание...", attachments=[ret_menu]
+            "Найденные расписания (пока заглушка)", attachments=[ret_menu]
         )
         return
 
@@ -211,7 +220,7 @@ async def message_callback(event: MessageCallback):
         )]
     elif payload["type"] == "schedule_display":
         schedule_id = int(payload["s_id"])
-        logging.info(f"{schedule_id} {datetime.fromisoformat(payload["c_date"]).isoformat()+ "Z"}")
+        logging.info(f"{schedule_id} {datetime.fromisoformat(payload["c_date"]).isoformat() + "Z"}")
         picture_token = await get_schedule_token(schedule_id, datetime.fromisoformat(payload["c_date"]))
 
         answer_payloads = [schedule_display(
@@ -225,10 +234,18 @@ async def message_callback(event: MessageCallback):
         }]
         answer_text = f"Date {payload['c_date']}"
     elif payload["type"] == "schedule_day_display":
+        schedule_id = int(payload["s_id"])
+        picture_token = await get_schedule_token(schedule_id, datetime.fromisoformat(payload["c_date"]), flag="day")
+
         answer_payloads = [schedule_day_display(
             schedule_id=int(payload["s_id"]),
             current_date=datetime.fromisoformat(payload["c_date"]),
-        )]
+        ), {
+            "type": "image",
+            "payload": {
+                "token": picture_token
+            }
+        }]
         answer_text = f"Date day {payload['c_date']}"
     elif payload["type"] == "schedule_week_select":
         answer_payloads = [schedule_week_select(
@@ -275,7 +292,7 @@ async def message_callback(event: MessageCallback):
     elif payload["type"] == "schedule_add_from_std":
         if event.message.recipient.chat_id is None:
             return
-        answer_text = "Искать он тут ВУЗ собрался, ага"
+        answer_text = "Введите название университета"
         answer_payloads = [schedule_add_search_steps()]
         update_user(
             UserMenuEntity(
@@ -353,8 +370,8 @@ async def message_callback(event: MessageCallback):
         if u_pos == "schedule_add_from_ics_search_university":
             await event.message.answer("Добавляем новый ВУЗ...")
             university_name = payload["entry_name"]
-            # Adition logic here
-            university_id = 0
+            university_id = await create_university(university_name)
+
             update_user(
                 UserMenuEntity(
                     id=event.message.recipient.chat_id,

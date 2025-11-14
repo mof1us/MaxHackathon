@@ -5,7 +5,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY ../schedule_backend .
+COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o MAX-schedule ./cmd/schedulesvc/main.go
 
 
