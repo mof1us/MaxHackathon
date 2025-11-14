@@ -70,3 +70,9 @@ async def create_university(uni_name: str) -> int:
         async with session.post(os.getenv("UNIVERSITIES_API") + f"universities?name={uni_name}") as response:
             return (await response.json()).get("id")
 
+async def search_schedule_university(uni_id: int, query: str) -> list[Schedule]:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(os.getenv("SCHEDULE_API") + f"schedule/resolve_list?id={uni_id}&name={query}&limit=5") as response:
+            json_result = await response.json()
+            schedule_list = list(map(lambda x: Schedule(id=x["id"], name=x["name"]), json_result))
+            return schedule_list

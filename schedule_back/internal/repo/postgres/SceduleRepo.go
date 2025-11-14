@@ -97,24 +97,12 @@ func (r *ScheduleRepo) ResolveApproxList(universityID uint, q string, limit int,
 		SELECT id, name
 		FROM schedules
 		WHERE university_id = ?
-		  AND (
-		       CAST(? AS text) = ''
-		    OR name % CAST(? AS text)
-		    OR name ILIKE ('%' || CAST(? AS text) || '%')
-		    OR name ILIKE (CAST(? AS text) || '%')
-		  )
-		  AND (
-		       CAST(? AS text) = ''
-		    OR similarity(name, CAST(? AS text)) >= ?
-		  )
 		ORDER BY similarity(name, CAST(? AS text)) DESC, name ASC
 		LIMIT ?;
 	`
 	err := r.db.Raw(sqlTrgm,
 		universityID,
-		q, q, q, q, // фильтр по запросу
-		q, q, minScore,
-		q, // order by similarity(name, q)
+		q, // фильтр по запросу // order by similarity(name, q)
 		limit,
 	).Scan(&rows).Error
 

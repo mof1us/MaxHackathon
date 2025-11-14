@@ -38,7 +38,8 @@ import random
 from database.entities.UserMenuEntity import UserMenuEntity
 from database.services.UserService import UserService
 
-from bot.api.schedule_api import get_schedule_token, search_university, add_schedule_from_ics, create_university
+from bot.api.schedule_api import get_schedule_token, search_university, add_schedule_from_ics, create_university, \
+    search_schedule_university
 
 from bot.api.schedule_api import get_schedule_list
 
@@ -176,9 +177,10 @@ async def text_callback(event: MessageCreated):
         q = event.message.body.text
         print(q)
         # Search logic
-
+        u = usrv.get_user(event.message.recipient.chat_id)
+        schedules = await search_schedule_university(u.metadata["university_id"], q)
         ret_menu = schedule_add_search_steps(
-            search_q=q if q is not None else "", search_results=[Schedule(id=1, name="test")]
+            search_q=q if q is not None else "", search_results=schedules
         )
         await event.message.answer(
             "Найденные расписания (пока заглушка)", attachments=[ret_menu]
