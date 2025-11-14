@@ -35,7 +35,7 @@ def schedule_add_from_ics():
     builder.add(CallbackButton(text="Отмена", payload=str({"type": "add_schedule"})))
     return builder.as_markup()
 
-def schedule_add_search_steps(search_q:str = "", search_results: list[University|Schedule] = [], addition_allowed: bool = False):
+def schedule_add_search_steps(search_q:str = "", search_results: list[University] | list[Schedule] = [], addition_allowed: bool = False):
     builder = InlineKeyboardBuilder()
     search_results_display(builder, search_results)
     if search_q != "" and addition_allowed:

@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import logging
 import os
 import aiohttp
@@ -10,7 +10,7 @@ from data_types.University import University
 load_dotenv()
 
 
-async def get_schedule_token(schedule_id: int, week_start: datetime.datetime, flag: str = "week"):
+async def get_schedule_token(schedule_id: int, week_start: datetime, flag: str = "week"):
     async with aiohttp.ClientSession() as session:
         async with session.post(os.getenv("SCHEDULE_API") + "token",
             json={
@@ -76,3 +76,23 @@ async def search_schedule_university(uni_id: int, query: str) -> list[Schedule]:
             json_result = await response.json()
             schedule_list = list(map(lambda x: Schedule(id=x["id"], name=x["name"]), json_result))
             return schedule_list
+
+
+async def get_all_available_days(schedule_id: int) -> list[datetime]:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(os.getenv("SCHEDULE_API") + f"time/all/{schedule_id}",) as response:
+            json_response = response
+            logging.info("response: ", json_response)
+            return list(map(lambda x: datetime.fromisoformat(x),  json_response))
+
+
+async def connect_user_to_schedule(user_id: int, schedule_id: int) -> bool:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(os.getenv("SCHEDULE_API") + f"schedule/attach", json={
+            "schedule_id":schedule_id,
+            "user_id":user_id
+            }) as response:
+            if response == 204:
+                return True
+            return False
+            

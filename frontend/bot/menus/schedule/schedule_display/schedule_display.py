@@ -1,6 +1,8 @@
 import datetime
 import locale
 from xmlrpc.client import DateTime
+
+from bot.api.schedule_api import get_all_available_days
 from maxapi.types import CallbackButton
 from maxapi.utils.inline_keyboard import InlineKeyboardBuilder
 from data_types.Schedule import Schedule
@@ -8,14 +10,16 @@ from data_types.Schedule import Schedule
 locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 
 
-def add_share_button(builder: InlineKeyboardBuilder, is_schedule_added: bool):
+def add_share_button(builder: InlineKeyboardBuilder, schedule_id: int, current_date:datetime.date, is_schedule_added: bool):
     if is_schedule_added:
         builder.row(
             CallbackButton(
                 text="Поделиться этим расписанием",
                 payload=str(
                     {
-                        # TODO: Make propper payload
+                        "type": "share_current_schedule",
+                        "s_id": schedule_id,
+                        "c_date": current_date.isoformat()
                     }
                 ),
             )
@@ -26,7 +30,9 @@ def add_share_button(builder: InlineKeyboardBuilder, is_schedule_added: bool):
             text="Добавить расписание",
             payload=str(
                 {
-                    # TODO: Make propper payload
+                    "type": "add_current_schedule",
+                    "s_id": schedule_id,
+                    "c_date": current_date.isoformat()
                 }
             ),
         )
@@ -120,15 +126,20 @@ def schedule_week_select(
 
 
 def schedule_display(
-    schedule_id: int, current_date: datetime.date, is_schedule_added: bool = False
+    schedule_id: int, current_date: datetime.date, available_days: list[datetime.datetime], is_schedule_added: bool = False
 ):
     builder = InlineKeyboardBuilder()
 
-    available_weeks = []
+    def is_available(date: datetime.date)->bool:
+        return any(list(map(lambda x: x==date, available_days)))
+
+
+    is_prev = is_available((current_date - datetime.timedelta(days=7)))
+    is_next = is_available((current_date - datetime.timedelta(days=7)))
 
     builder.row(
         CallbackButton(
-            text="⬅️",
+            text="⬅️" if is_prev else '🚫', #
             payload=str(
                 {
                     "type": "schedule_display",
@@ -148,7 +159,7 @@ def schedule_display(
             ),
         ),
         CallbackButton(
-            text="➡️",
+            text="➡️" if is_prev else '🚫',
             payload=str(
                 {
                     "type": "schedule_display",
@@ -177,7 +188,7 @@ def schedule_display(
             for i in range(7)
         ]
     )
-    add_share_button(builder, is_schedule_added)
+    add_share_button(builder, schedule_id, current_date, is_schedule_added)
     builder.row(
         CallbackButton(
             text="Назад",
@@ -220,7 +231,7 @@ def schedule_day_display(
         ),
     )
 
-    add_share_button(builder, is_schedule_added)
+    add_share_button(builder, schedule_id, current_date, is_schedule_added)
 
     builder.row(
         CallbackButton(

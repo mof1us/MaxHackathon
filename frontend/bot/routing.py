@@ -38,7 +38,7 @@ import random
 from database.entities.UserMenuEntity import UserMenuEntity
 from database.services.UserService import UserService
 
-from bot.api.schedule_api import get_schedule_token, search_university, add_schedule_from_ics, create_university, \
+from bot.api.schedule_api import connect_user_to_schedule, get_all_available_days, get_schedule_token, search_university, add_schedule_from_ics, create_university, \
     search_schedule_university
 
 from bot.api.schedule_api import get_schedule_list
@@ -126,9 +126,6 @@ async def text_callback(event: MessageCreated):
         q = event.message.body.text
         if q is None:
             q = ""
-        print(q)
-        # TODO Search logic
-
         universities_by_query = await search_university(event.message.body.text)
 
         ret_menu = schedule_add_search_steps(
@@ -142,12 +139,20 @@ async def text_callback(event: MessageCreated):
         await event.message.answer("Добавляем расписание...")
         # Logic here
         user = usrv.get_user(event.message.recipient.chat_id)
-        await add_schedule_from_ics(user.metadata["ics_url"], q, event.from_user.user_id, user.metadata["university_id"])
-
+        if user is None:
+            await event.message.answer("Произошла неизвестная ошибка, попробуйте позже")
+            text, menu = startup_menu()
+            await event.message.answer(text, attachments=[menu])
+            return
+        # TODO: Get id from added schedule
+        await add_schedule_from_ics(user.metadata["ics_url"], q, event.message.recipient.chat_id, user.metadata["university_id"])
+        
         s_id = 0
+        available_days = await get_all_available_days(s_id) 
         ret_menu = schedule_display(
             schedule_id=int(s_id),
             current_date=datetime.now(),
+            available_days=available_days
         )
         await event.message.answer("unknown text", attachments=[ret_menu])
     if u_state.position == "schedule_add_from_token":
@@ -156,15 +161,15 @@ async def text_callback(event: MessageCreated):
         await event.message.answer("Добавляем расписание...")
         # Logic here
         s_id = 0
+        available_days = await get_all_available_days(s_id)
         ret_menu = schedule_display(
             schedule_id=int(s_id),
             current_date=datetime.now(),
+            available_days=available_days
         )
         await event.message.answer("unknown text 2", attachments=[ret_menu])
     if u_state.position == "schedule_add_from_std_university_search":
         q = event.message.body.text
-        print(q)
-        # Search logic
         unis = await search_university(q)
         ret_menu = schedule_add_search_steps(
             search_q=q if q is not None else "", search_results=unis
@@ -175,23 +180,23 @@ async def text_callback(event: MessageCreated):
         return
     if u_state.position == "schedule_add_from_std_name_search":
         q = event.message.body.text
-        print(q)
-        # Search logic
-        u = usrv.get_user(event.message.recipient.chat_id)
-        schedules = await search_schedule_university(u.metadata["university_id"], q)
+        user = usrv.get_user(event.message.recipient.chat_id)
+        if user is None:
+            return
+        schedules = await search_schedule_university(user.metadata["university_id"], q)
         ret_menu = schedule_add_search_steps(
             search_q=q if q is not None else "", search_results=schedules
         )
         await event.message.answer(
-            "Найденные расписания (пока заглушка)", attachments=[ret_menu]
+            "Найденные расписания", attachments=[ret_menu]
         )
         return
 
 
 @dp.message_callback()
 async def message_callback(event: MessageCallback):
-    answer_text = "unknown_text"
-    answer_payloads = [startup_menu()]
+    answer_text, stp_menu = main_menu()
+    answer_payloads = [stp_menu]
 
     try:
         payload = (
@@ -218,14 +223,23 @@ async def message_callback(event: MessageCallback):
             # ],
             page=int(payload.get("page", 0)),
         )]
-    elif payload["type"] == "schedule_display":
+    elif payload["type"] == "schedule_display" or payload["type"] == "add_current_schedule":
         schedule_id = int(payload["s_id"])
+        if payload["type"] == "add_current_schedule":
+            is_success = await connect_user_to_schedule(event.callback.user.chat_id, schedule_id)
+            if not is_success:
+                await event.answer("Не удалось добавить расписание в ваш аккаунт")
+                
         logging.info(f"{schedule_id} {datetime.fromisoformat(payload["c_date"]).isoformat() + "Z"}")
+        schedules = await get_schedule_list(event.callback.user.user_id)
         picture_token = await get_schedule_token(schedule_id, datetime.fromisoformat(payload["c_date"]))
+        available_days = await get_all_available_days(schedule_id) 
 
         answer_payloads = [schedule_display(
             schedule_id=schedule_id,
             current_date=datetime.fromisoformat(payload["c_date"]),
+            available_days=available_days,
+            is_schedule_added=schedule_id in [s.id for s in schedules]
         ), {
             "type": "image",
             "payload": {
@@ -356,9 +370,12 @@ async def message_callback(event: MessageCallback):
         if u_pos == "schedule_add_from_std_name_search":
             s_id = int(payload["result_payload"])
             # Adition logic here
-            answer_payloads = [schedule_display(
-                schedule_id=s_id, current_date=datetime.now()
-            )]
+            available_days = await get_all_available_days(s_id)
+            answer_payloads = [
+                schedule_display(
+                    schedule_id=s_id, current_date=datetime.now(),
+                    available_days=available_days
+                )]
 
     elif payload["type"] == "search_add_entry":
         if event.message.recipient.chat_id is None:
@@ -402,3 +419,8 @@ def update_user(new_data: UserMenuEntity) -> bool:
     if user is None:
         return usrv.create_user(new_data)
     return usrv.change_user(new_data)
+
+
+def main_menu():
+    answer_text = "Здарова!"
+    return answer_text, startup_menu()
