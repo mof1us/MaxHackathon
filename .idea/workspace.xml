@@ -4,203 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="47d8ab11-bf9c-4e68-8e4b-1d3404f794f6" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/Hackaton.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/CONSTANTS.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/bot/api/schedule_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/bot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/client/default.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/connection/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/connection/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/context/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/context/context.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/context/state_machine.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/dispatcher.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/api_path.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/attachment.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/button_type.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/chat_permission.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/chat_status.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/chat_type.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/http_method.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/intent.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/message_link_type.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/parse_mode.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/sender_action.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/text_style.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/update.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/enums/upload_type.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/exceptions/dispatcher.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/exceptions/download_file.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/exceptions/invalid_token.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/exceptions/max.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/filters/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/filters/callback_payload.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/filters/command.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/filters/filter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/filters/handler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/filters/middleware.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/loggers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/add_admin_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/add_members_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/change_info.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/delete_bot_from_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/delete_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/delete_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/delete_pin_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/edit_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/edit_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_chat_by_id.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_chat_by_link.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_chats.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_list_admin_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_me.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_me_from_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_members_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_messages.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_pinned_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_subscriptions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_updates.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_upload_url.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/get_video.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/pin_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/remove_admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/remove_member_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/send_action.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/send_callback.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/send_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/subscribe_webhook.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/added_admin_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/added_members_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/deleted_bot_from_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/deleted_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/deleted_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/deleted_pin_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/edited_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/getted_list_admin_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/getted_members_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/getted_pineed_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/getted_subscriptions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/getted_updates.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/getted_upload_url.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/pinned_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/removed_admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/removed_member_chat.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/sended_action.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/sended_callback.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/sended_message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/subscribed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/types/unsubscribed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/methods/unsubscribe_webhook.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/attachment.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/audio.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/attachment_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/callback_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/chat_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/link_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/message_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/open_app_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/request_contact.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/buttons/request_geo_location_button.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/contact.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/file.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/image.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/location.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/share.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/sticker.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/upload.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/attachments/video.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/callback.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/chats.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/command.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/errors.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/input_media.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/subscription.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/bot_added.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/bot_removed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/bot_started.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/bot_stopped.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/chat_title_changed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/dialog_cleared.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/dialog_muted.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/dialog_removed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/dialog_unmuted.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/message_callback.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/message_chat_created.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/message_created.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/message_edited.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/message_removed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/update.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/user_added.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/updates/user_removed.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/types/users.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/utils/inline_keyboard.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/utils/message.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/maxapi/utils/updates.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.idea/ImagsForHackatonGenerator.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.idea/QuickJinja_project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/CONSTANTS.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/application/Application.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/application/ScreenShoter.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/application/responses/DayScheduleGenerationRequest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/application/responses/ScheduleItemsGenerationRequest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/application/responses/WeekScheduleGeneratorRequest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/docker-compose.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/image_generation_backend/template_generator/Templator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/.idea/UniversitiesService.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/application/Application.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/database/entities/UniversityEntity.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/database/repositories/UniversityRepository.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/database/services/UniversityService.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/universities_backend/test_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.idea/Hackaton.iml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.idea/Hackaton.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/bot/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/bot/routing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/database/services/UserService.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/database/services/UserService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_backend" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_backend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_backend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_backend/config/prod/prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_backend/config/prod/prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_backend/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_backend/internal/service/service.go" afterDir="false" />
-    </list>
+    <list default="true" id="47d8ab11-bf9c-4e68-8e4b-1d3404f794f6" name="Changes" comment="Перенос всех сервисов в монореп + настройка docker-compose.yml" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -214,9 +18,21 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/schedule_backend" />
     <option name="ROOT_SYNC" value="SYNC" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mof1us&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/mof1us/MaxHackathon.git&quot;,
+    &quot;accountId&quot;: &quot;72357b29-ae3a-46de-991e-bf901c61edf3&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -225,32 +41,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.Docker Image.executor": "Run",
-    "Docker.docker-compose.yml.max-frontend: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml.max-schedule-backend: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml.postgresDatabase: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
-    "Docker.frontend/Dockerfile.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.Unnamed.executor": "Debug",
-    "Python.main (1).executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/mofius/Hackaton",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.Docker Image.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.max-frontend: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.max-schedule-backend: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml.postgresDatabase: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.frontend/Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.Unnamed.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/mofius/Hackaton&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -407,7 +223,7 @@
       <workItem from="1763074876142" duration="8158000" />
       <workItem from="1763083109026" duration="3875000" />
       <workItem from="1763086992046" duration="2684000" />
-      <workItem from="1763089960642" duration="2413000" />
+      <workItem from="1763089960642" duration="2553000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <option name="closed" value="true" />
@@ -417,7 +233,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762963401256</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Перенос всех сервисов в монореп + настройка docker-compose.yml">
+      <option name="closed" value="true" />
+      <created>1763092419534</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763092419535</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -425,7 +249,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update" />
-    <option name="LAST_COMMIT_MESSAGE" value="update" />
+    <MESSAGE value="Перенос всех сервисов в монореп + настройка docker-compose.yml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Перенос всех сервисов в монореп + настройка docker-compose.yml" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Hackaton$main.coverage" NAME="main Coverage Results" MODIFIED="1763074584225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
