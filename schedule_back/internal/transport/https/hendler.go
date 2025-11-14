@@ -4,6 +4,7 @@ import (
 	"MAX-schedule/internal/service"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"log/slog"
@@ -18,6 +19,59 @@ type ScheduleHandler struct {
 
 func NewScheduleHandler(svc service.ScheduleService, logger *slog.Logger) *ScheduleHandler {
 	return &ScheduleHandler{svc: svc, logger: logger}
+}
+
+// GET /api/schedules/resolve_list?id=1&name=...&limit=10&min_score=0.2
+func (h *ScheduleHandler) ResolveList(c *gin.Context) {
+	idStr := c.Query("id")
+	name := strings.TrimSpace(c.Query("name"))
+	if idStr == "" || name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "нужны query-параметры id и name"})
+		return
+	}
+	uid, err := strconv.ParseUint(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id должен быть числом"})
+		return
+	}
+	limit := 10
+	if ls := c.Query("limit"); ls != "" {
+		if v, e := strconv.Atoi(ls); e == nil {
+			if v < 1 {
+				v = 1
+			}
+			if v > 50 {
+				v = 50
+			}
+			limit = v
+		}
+	}
+	minScore := 0.5
+	if ms := c.Query("min_score"); ms != "" {
+		if v, e := strconv.ParseFloat(ms, 64); e == nil && v >= 0 && v <= 1 {
+			minScore = v
+		}
+	}
+
+	list, err := h.svc.ResolveScheduleList(uint(uid), name, limit, minScore)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if len(list) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "расписания не найдены"})
+		return
+	}
+
+	type out struct {
+		ID   uint   `json:"id"`
+		Name string `json:"name"`
+	}
+	resp := make([]out, 0, len(list))
+	for _, s := range list {
+		resp = append(resp, out{ID: s.ID, Name: s.Name})
+	}
+	c.JSON(http.StatusOK, resp)
 }
 
 // POST /api/token
@@ -151,7 +205,7 @@ func (h *ScheduleHandler) ScheduleForDay(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 	items, err := h.svc.ScheduleforDay(uint(id))
 	if err != nil {
@@ -164,7 +218,7 @@ func (h *ScheduleHandler) ScheduleForWeek(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 	items, err := h.svc.ScheduleforWeek(uint(id))
 
@@ -178,7 +232,7 @@ func (h *ScheduleHandler) ScheduleForMonth(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 	items, err := h.svc.ScheduleforMonth(uint(id))
 	if err != nil {

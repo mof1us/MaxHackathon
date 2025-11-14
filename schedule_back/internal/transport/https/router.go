@@ -13,6 +13,7 @@ func NewRouter(h *ScheduleHandler, _ *slog.Logger) *gin.Engine {
 	{
 		schedule := api.Group("/schedule")
 		{
+			schedule.GET("/resolve_list", h.ResolveList) // 🔹 список кандидатов
 			schedule.POST("/", h.Import)
 			schedule.GET("/:id", h.GetByID)
 			schedule.POST("/attach", h.AttachUser)
@@ -24,7 +25,6 @@ func NewRouter(h *ScheduleHandler, _ *slog.Logger) *gin.Engine {
 			time.GET("/month/:id", h.ScheduleForMonth)
 			time.GET("/all/:id", h.GetAllDateScheduleItems)
 		}
-
 		// <— новый эндпоинт
 		api.POST("/token", h.GetOrGenerateToken)
 	}
