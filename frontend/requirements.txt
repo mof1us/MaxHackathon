@@ -1,0 +1,5 @@
+maxapi
+dotenv
+fastapi
+uvicorn
+psycopg2
