@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="de.achimonline.quickjinja.settings.QuickJinjaProjectSettingsState">
+    <option name="settings">
+      <QuickJinjaProjectSettings>
+        <option name="resultViewMode" value="HTML" />
+        <option name="templateFilePath" value="$USER_HOME$/PycharmProjects/ImagsForHackatonGenerator/static/templates/schedule_day_template.jinja" />
+      </QuickJinjaProjectSettings>
+    </option>
+  </component>
+</project>

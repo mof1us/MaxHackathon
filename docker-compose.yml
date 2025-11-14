@@ -36,7 +36,7 @@ services:
   max-schedule-backend:
     build:
       context: schedule_backend
-      dockerfile: Dockerfile
+      dockerfile: schedule_backend/Dockerfile
       pull: true
     environment:
       CONFIG_PATH: /config/prod/prod.yaml
