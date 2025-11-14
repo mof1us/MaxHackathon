@@ -139,14 +139,14 @@ func (h *ScheduleHandler) Import(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	_, err := h.svc.ImportICS(req.Link, req.ScheduleName, req.UniversityID, req.UserID)
+	res, err := h.svc.ImportICS(req.Link, req.ScheduleName, req.UniversityID, req.UserID)
 	if err != nil {
 		h.logger.Error("import ics failed", slog.String("err", err.Error()))
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, gin.H{"id": res.ID})
 }
 
 // GET /api/schedule/:id
