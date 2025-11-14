@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: max_schedule_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: max_schedule
+    ports:
+      - "5433:5432"   # исправлено
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d max_schedule"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  max-schedule:
+    container_name: max_schedule_app
+    build:
+      context: ../schedule_backend
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      CONFIG_PATH: /config/prod/prod.yaml
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: 1111
+      DB_NAME: max_schedule
+      DB_SSLMODE: disable
+
+    ports:
+      - "8010:8010"
+
+    volumes:
+      - ./config:/config   # <<< ключевой момент
+
+    command: ["./MAX-schedule"]
+
+volumes:
+  postgres_data:
