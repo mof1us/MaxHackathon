@@ -124,6 +124,8 @@ def schedule_display(
 ):
     builder = InlineKeyboardBuilder()
 
+    available_weeks = []
+
     builder.row(
         CallbackButton(
             text="⬅️",

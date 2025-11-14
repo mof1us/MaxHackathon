@@ -1,3 +1,5 @@
+#TODO убрать все порты наружу.
+
 version: "3.8"
 services:
   postgresDatabase:
@@ -35,8 +37,8 @@ services:
 
   max-schedule-backend:
     build:
-      context: schedule_backe
-      dockerfile: schedule_backend/Dockerfile
+      context: schedule_back
+      dockerfile: Dockerfile
       pull: true
     environment:
       CONFIG_PATH: /config/prod/prod.yaml
@@ -64,6 +66,8 @@ services:
       bot-network:
         aliases:
           - image-generator
+    ports:
+      - "8000:8000"
 
   max-universities-backend:
     build:
@@ -79,6 +83,8 @@ services:
       bot-network:
         aliases:
           - university_backend
+    ports:
+      - "9000:8001"
 
 networks:
   bot-network:

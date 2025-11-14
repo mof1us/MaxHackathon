@@ -1,3 +1,5 @@
+from data_types.Schedule import Schedule
+from data_types.University import University
 from maxapi.types import CallbackButton
 from maxapi.utils.inline_keyboard import InlineKeyboardBuilder
 
@@ -33,10 +35,10 @@ def schedule_add_from_ics():
     builder.add(CallbackButton(text="Отмена", payload=str({"type": "add_schedule"})))
     return builder.as_markup()
 
-def schedule_add_search_steps(search_q:str = "", search_results: list[tuple[str, str]] = [], addition_allowed: bool = False):
+def schedule_add_search_steps(search_q:str = "", search_results: list[University|Schedule] = [], addition_allowed: bool = False):
     builder = InlineKeyboardBuilder()
     search_results_display(builder, search_results)
-    if search_q != "" and len(search_results) == 0 and addition_allowed:
+    if search_q != "" and addition_allowed:
         builder.row(CallbackButton(text="Добавить", payload=str({"type": "search_add_entry", "entry_name": search_q})))
     builder.row(CallbackButton(text="Отмена", payload=str({"type": "add_schedule"})))
     return builder.as_markup()

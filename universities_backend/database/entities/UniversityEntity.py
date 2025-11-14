@@ -1,10 +1,8 @@
-
-
 class UniversityEntity:
     id: int
     name: str
 
-    def __init__(self, id: int, name: str) -> None:
+    def __init__(self, id: int=0, name: str="undefined") -> None:
         self.id = id
         self.name = name
 

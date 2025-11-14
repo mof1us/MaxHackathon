@@ -41,8 +41,13 @@ class UniversitiesService:
         with self.__transaction():
             with self.__connection.cursor() as cursor:
                 return self.__university_repo.get_university(cursor, university_id)
-            
-    def create_uni(self, university: UniversityEntity) -> bool:
+
+    def get_uni_by_name(self, university_name: str) -> UniversityEntity | None:
+        with self.__transaction():
+            with self.__connection.cursor() as cursor:
+                return self.__university_repo.get_university_by_name(cursor, university_name)
+
+    def create_uni(self, university: UniversityEntity) -> int:
         with self.__transaction():
             with self.__connection.cursor() as cursor:
                 return self.__university_repo.create_university(cursor, university)
