@@ -1,5 +1,6 @@
 import datetime
 import locale
+import logging
 from xmlrpc.client import DateTime
 
 from bot.api.schedule_api import get_all_available_days
@@ -92,7 +93,6 @@ def schedule_week_select(
         ):
             continue
         first_day_of_first_week = day.replace(day=1) - datetime.timedelta(days=day.replace(day=1).weekday())
-        print(day, first_day_of_first_week, (day - first_day_of_first_week).days)
         week_i = (day - first_day_of_first_week).days // 7
         weeks[week_i] = (first_day_of_week, f"{first_day_of_week.day} {first_day_of_week.strftime("%b")}. - {last_day_of_week.day} {last_day_of_week.strftime("%b")}.")
     
@@ -125,26 +125,57 @@ def schedule_week_select(
     return builder.as_markup()
 
 
+def day2week_idx(day:datetime.datetime):
+    first_day_of_week = day - datetime.timedelta(days=day.weekday())
+    last_day_of_week = first_day_of_week + datetime.timedelta(days=6)
+    first_day_of_first_week = day.replace(day=1) - datetime.timedelta(days=day.replace(day=1).weekday())
+    week_i = (day - first_day_of_first_week).days // 7
+    return week_i
+
+
 def schedule_display(
-    schedule_id: int, current_date: datetime.date, available_days: list[datetime.datetime], is_schedule_added: bool = False
+    schedule_id: int, current_date: datetime.datetime, available_days: list[datetime.date], is_schedule_added: bool = False
 ):
     builder = InlineKeyboardBuilder()
 
     def is_available(date: datetime.date)->bool:
         return any(list(map(lambda x: x==date, available_days)))
 
+    start_of_week = current_date - datetime.timedelta(days=current_date.weekday())
 
-    is_prev = is_available((current_date - datetime.timedelta(days=7)))
-    is_next = is_available((current_date - datetime.timedelta(days=7)))
-
+    
+    current_week_i = day2week_idx(current_date)
+    current_i = current_week_i+5*current_date.month
+    available_days_on_week = {}
+    weeks = {}
+    for day in available_days:
+        first_day_of_week = day - datetime.timedelta(days=day.weekday())
+        week_i = day2week_idx(day)
+        i = week_i+5*day.month
+        if i == current_i and day.weekday() != 6:
+            available_days_on_week[day.weekday()] = day
+        weeks[i] = first_day_of_week
+    
+    weeks[current_i] = current_date - datetime.timedelta(days=current_date.weekday())
+    
+    prev_i = current_i
+    next_i = current_i
+    for i in weeks:
+        # logging.info(">"*10 + str(i) + f" {current_i}")
+        if current_i - i > 0:
+            prev_i = i
+        if i - current_i > 0:
+            next_i = i
+            break
+    
     builder.row(
         CallbackButton(
-            text="⬅️" if is_prev else '🚫', #
+            text="⬅️" if prev_i != current_i else '🚫', #
             payload=str(
                 {
                     "type": "schedule_display",
                     "s_id": schedule_id,
-                    "c_date": (current_date - datetime.timedelta(days=7)).isoformat(),
+                    "c_date": weeks[prev_i].isoformat(),
                 }
             ),
         ),
@@ -159,35 +190,32 @@ def schedule_display(
             ),
         ),
         CallbackButton(
-            text="➡️" if is_prev else '🚫',
+            text="➡️" if next_i != current_i else '🚫',
             payload=str(
                 {
                     "type": "schedule_display",
                     "s_id": schedule_id,
-                    "c_date": (current_date + datetime.timedelta(days=7)).isoformat(),
+                    "c_date": weeks[next_i].isoformat(),
                 }
             ),
         ),
     )
 
-    start_of_week = current_date - datetime.timedelta(days=current_date.weekday())
-    builder.row(
-        *[
-            CallbackButton(
-                text=(start_of_week + datetime.timedelta(days=i)).strftime("%a"),
-                payload=str(
-                    {
-                        "type": "schedule_day_display",
-                        "s_id": schedule_id,
-                        "c_date": (
-                            start_of_week + datetime.timedelta(days=i)
-                        ).isoformat(),
-                    }
-                ),
-            )
-            for i in range(7)
-        ]
-    )
+    callback_row = []
+    for i in range(6):
+        day = available_days_on_week.get(i, None)
+        callback_row.append(CallbackButton(
+            text='🚫' if day is None else day.strftime("%a"),
+            payload=str(
+                {
+                    "type": "schedule_display" if day is None else "schedule_day_display",
+                    "s_id": schedule_id,
+                    "c_date": current_date.isoformat() if day is None else day.isoformat(),
+                }
+            ),
+        ))
+
+    builder.row(*callback_row)
     add_share_button(builder, schedule_id, current_date, is_schedule_added)
     builder.row(
         CallbackButton(
@@ -204,28 +232,41 @@ def schedule_display(
 
 
 def schedule_day_display(
-    schedule_id: int, current_date: datetime.date, is_schedule_added: bool = False
+    schedule_id: int, current_date: datetime.date, available_days: list[datetime.date], is_schedule_added: bool = False
 ):
     builder = InlineKeyboardBuilder()
 
+    # logging.info(f"{'<'*20} {len(available_days)}")
+    if isinstance(current_date, datetime.datetime):
+        current_date = current_date.date()
+    prev_day = current_date
+    next_day = current_date
+    for day in available_days:
+        # logging.info(">"*20 + day.isoformat() + f" {current_date.isoformat()}")
+        if (current_date - day).total_seconds() > 0:
+            prev_day = day
+        if (day - current_date).total_seconds() > 0:
+            next_day = day
+            break
+
     builder.row(
         CallbackButton(
-            text="⬅️",
+            text="⬅️" if prev_day != current_date else '🚫',
             payload=str(
                 {
                     "type": "schedule_day_display",
                     "s_id": schedule_id,
-                    "c_date": (current_date - datetime.timedelta(days=1)).isoformat(),
+                    "c_date": prev_day.isoformat(),
                 }
             ),
         ),
         CallbackButton(
-            text="➡️",
+            text="➡️" if next_day != current_date else '🚫',
             payload=str(
                 {
                     "type": "schedule_day_display",
                     "s_id": schedule_id,
-                    "c_date": (current_date + datetime.timedelta(days=1)).isoformat(),
+                    "c_date": next_day.isoformat(),
                 }
             ),
         ),
@@ -246,4 +287,20 @@ def schedule_day_display(
         )
     )
 
+    return builder.as_markup()
+
+def share_schedule_menu(schedule_id: int, current_date:datetime.date):
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        CallbackButton(
+            text="Назад",
+            payload=str(
+                {
+                    "type": "schedule_display",
+                    "s_id": schedule_id,
+                    "c_date": current_date.isoformat(),
+                }
+            ),
+        )
+    )
     return builder.as_markup()

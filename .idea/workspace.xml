@@ -4,12 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="47d8ab11-bf9c-4e68-8e4b-1d3404f794f6" name="Changes" comment="Допил1">
+    <list default="true" id="47d8ab11-bf9c-4e68-8e4b-1d3404f794f6" name="Changes" comment="tmp">
+      <change afterPath="$PROJECT_DIR$/postgres_init/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/bot/api/schedule_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/bot/api/schedule_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/bot/menus/schedule/schedule_add/schedule_add.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/bot/menus/schedule/schedule_add/schedule_add.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/bot/menus/schedule/schedule_display/schedule_display.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/bot/menus/schedule/schedule_display/schedule_display.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/bot/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/bot/routing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schedule_back/internal/repo/postgres/SceduleRepo.go" beforeDir="false" afterPath="$PROJECT_DIR$/schedule_back/internal/repo/postgres/SceduleRepo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/database/services/UserService.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/database/services/UserService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/maxapi/utils/message.py" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/maxapi/utils/message.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_generation_backend/application/ScreenShoter.py" beforeDir="false" afterPath="$PROJECT_DIR$/image_generation_backend/application/ScreenShoter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/universities_backend/database/services/UniversityService.py" beforeDir="false" afterPath="$PROJECT_DIR$/universities_backend/database/services/UniversityService.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +85,7 @@
       <recent name="$PROJECT_DIR$/frontend" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/postgres_init" />
       <recent name="$PROJECT_DIR$/schedule_back" />
     </key>
   </component>
@@ -234,7 +241,9 @@
       <workItem from="1763086992046" duration="2684000" />
       <workItem from="1763089960642" duration="2553000" />
       <workItem from="1763092564923" duration="321000" />
-      <workItem from="1763121113029" duration="11574000" />
+      <workItem from="1763121113029" duration="16810000" />
+      <workItem from="1763143800251" duration="1576000" />
+      <workItem from="1763145394832" duration="12488000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <option name="closed" value="true" />
@@ -292,7 +301,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763134746181</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Добавление поиска по расписаниям внутри вуза + фикс его в го">
+      <option name="closed" value="true" />
+      <created>1763136881641</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1763136881641</updated>
+    </task>
+    <task id="LOCAL-00009" summary="tmp">
+      <option name="closed" value="true" />
+      <created>1763142533001</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1763142533001</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -313,7 +338,9 @@
     <MESSAGE value="update" />
     <MESSAGE value="Перенос всех сервисов в монореп + настройка docker-compose.yml" />
     <MESSAGE value="Допил1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Допил1" />
+    <MESSAGE value="Добавление поиска по расписаниям внутри вуза + фикс его в го" />
+    <MESSAGE value="tmp" />
+    <option name="LAST_COMMIT_MESSAGE" value="tmp" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Hackaton$main.coverage" NAME="main Coverage Results" MODIFIED="1763074584225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

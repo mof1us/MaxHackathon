@@ -79,5 +79,5 @@ class ScreenShooter:
 
         self.templator.get_rendered_day_template(filename + ".html", day)
         self.hti.screenshot(html_file="out/" + filename + ".html",
-                            save_as=filename + ".jpg", size=(1400, self.__calculate_day_page_height(day)))
+                            save_as=filename + ".jpg", size=(550, self.__calculate_day_page_height(day)))
         return filename + ".jpg"

@@ -55,12 +55,9 @@ async def process_input_media(
 
     if att.type in (UploadType.VIDEO, UploadType.AUDIO):
         if upload.token is None:
-            
             if bot.session is not None:
                 await bot.session.close()
-            
             raise MaxUploadFileFailed('По неизвестной причине token не был получен')
-        
         token = upload.token
 
     elif att.type == UploadType.FILE:

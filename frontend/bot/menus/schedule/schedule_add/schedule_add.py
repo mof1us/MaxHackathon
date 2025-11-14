@@ -1,3 +1,4 @@
+from datetime import datetime
 from data_types.Schedule import Schedule
 from data_types.University import University
 from maxapi.types import CallbackButton
@@ -46,4 +47,10 @@ def schedule_add_search_steps(search_q:str = "", search_results: list[University
 def schedule_add_from_ics_name_step():
     builder = InlineKeyboardBuilder()
     builder.row(CallbackButton(text="Отмена", payload=str({"type": "add_schedule"})))
+    return builder.as_markup()
+
+def succes_addition(schedule_id:int):
+    builder = InlineKeyboardBuilder()
+    builder.add(CallbackButton(text="к списку", payload=str({"type": "schedule_list"})))
+    builder.add(CallbackButton(text="к расписанию", payload=str({"type": "schedule_display", "s_id": schedule_id, "c_date": datetime.now().isoformat()})))
     return builder.as_markup()

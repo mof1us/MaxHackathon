@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 
+from bot.ui.display_schedule import display_schedule
 from maxapi.types import BotStarted, Command, MessageCreated, MessageCallback, PhotoAttachmentRequestPayload
 from maxapi import Bot, Dispatcher
 from maxapi.filters import F
@@ -13,6 +14,7 @@ from maxapi.types import (
     MessageCreated,
     MessageCallback,
 )
+from maxapi.types.message import Message
 from maxapi.types.attachments import Image
 from maxapi.utils.inline_keyboard import InlineKeyboardBuilder
 from maxapi.types.attachments.attachment import OtherAttachmentPayload
@@ -23,17 +25,18 @@ from bot.menus.schedule.schedule_add.schedule_add import (
     schedule_add_from_ics_name_step,
     schedule_add_search_steps,
     schedule_add_from_token,
+    succes_addition,
 )
 from bot.menus.schedule.schedule_display.schedule_display import (
     schedule_display,
     schedule_week_select,
     schedule_month_select,
     schedule_day_display,
+    share_schedule_menu,
 )
 from bot.menus.schedule.schedule_list import schedule_list
 from bot.menus.startup_menu import startup_menu
 from data_types.Schedule import Schedule
-import random
 
 from database.entities.UserMenuEntity import UserMenuEntity
 from database.services.UserService import UserService
@@ -64,7 +67,11 @@ async def main():  # точка входа
 async def hello(event: BotStarted):
     await bot.send_message(
         chat_id=event.chat_id,
-        text="Привет!",
+        text="Привет! \n\nЯ - бот, который поможет ознакомиться с расписанием в университете. \n\nЯ умею:\n" + \
+        "👉 Отображать расписания в удобном формате\n" + \
+        "👉 Обрабатывать и сохранять расписания из ics файлов\n" + \
+        "👉 Хранить любые расписания из вашего университета (просто воспользуйтесь поиском!)\n\n" +\
+        "Данный бот является решением команды 'MAXимально не по тз' в рамках хакатона.",
         attachments=[
             startup_menu(),
         ],  # Для MAX клавиатура это вложение,
@@ -76,14 +83,14 @@ async def upload_callback(event: MessageCreated):
     # print("Attachement callback activated")
     atts = event.message.body.attachments
     if atts is None or len(atts) > 1:
-        await event.message.answer("Пока отправка более одного вложения невозможна")
+        await event.message.answer("⚠️Загрузите один файл⚠️")
         return
     if event.message.recipient.chat_id is None:
         return
     u_state = usrv.get_user(event.message.recipient.chat_id)
     if u_state is None:
         # await event.message.answer("Пожалуйста, начните сначала")
-        await event.message.answer("Загрузка файла не предполагалась в этом меню.")
+        await event.message.answer("⚠️Я вас не понял⚠️")
         return
     # print(u_state.position)
     if u_state.position == "schedule_add_from_ics":
@@ -91,7 +98,7 @@ async def upload_callback(event: MessageCreated):
         if not isinstance(att, File) or not isinstance(
                 att.payload, OtherAttachmentPayload
         ):
-            await event.message.answer("Пожалуйста, загрузите ICS файл")
+            await event.message.answer("⚠️Загрузите файл в формате ICS⚠️")
             return
 
         ret_menu = schedule_add_search_steps()
@@ -102,13 +109,13 @@ async def upload_callback(event: MessageCreated):
                 metadata={"ics_url": att.payload.url},
             )
         )
-        await event.message.answer("Введите название университета", attachments=[ret_menu])
+        await event.message.answer("✍️Введите название университета🏫", attachments=[ret_menu])
 
         print("-" * 10)
         print(att.payload.url)
         print("-" * 10)
         return
-    await event.message.answer("Загрузка файла не предполагалась в этом меню.")
+    await event.message.answer("⚠️Я вас не понял⚠️")
 
 
 @dp.message_created(F.message.body.text)
@@ -119,7 +126,7 @@ async def text_callback(event: MessageCreated):
         return
     u_state = usrv.get_user(event.message.recipient.chat_id)
     if u_state is None:
-        await event.message.answer("Ваш ввод не предполагалась в этом меню.")
+        await event.message.answer("⚠️Я вас не понял⚠️")
         return
     # print(u_state.position)
     if u_state.position == "schedule_add_from_ics_search_university":
@@ -132,63 +139,75 @@ async def text_callback(event: MessageCreated):
             search_results=universities_by_query,
             search_q=q if q is not None else "", addition_allowed=True
         )
-        await event.message.answer("Выберите ваш университет из списка (или используйте как новый)", attachments=[ret_menu])
+        await event.message.answer("Выберите ваш университет🏫 из списка (или используйте как новый✨)", attachments=[ret_menu])
         return
     if u_state.position == "schedule_add_from_ics_name_step":
         q = event.message.body.text
-        await event.message.answer("Добавляем расписание...")
+        await event.message.answer("⌛Добавляем расписание...⌛")
         # Logic here
         user = usrv.get_user(event.message.recipient.chat_id)
         if user is None:
-            await event.message.answer("Произошла неизвестная ошибка, попробуйте позже")
-            text, menu = startup_menu()
-            await event.message.answer(text, attachments=[menu])
+            await send_error("⚠️Произошла неизвестная ошибка, попробуйте позже⚠️", event.message)
             return
-        # TODO: Get id from added schedule
-        await add_schedule_from_ics(user.metadata["ics_url"], q, event.message.recipient.chat_id, user.metadata["university_id"])
-        
-        s_id = 0
+        s_id = await add_schedule_from_ics(user.metadata["ics_url"], q, event.message.recipient.chat_id, user.metadata["university_id"])
+        if s_id is None:
+            await send_error("⚠️Произошла неизвестная ошибка при обработке файла, попробуйте позже⚠️", event.message)
+            return
+    
         available_days = await get_all_available_days(s_id) 
-        ret_menu = schedule_display(
-            schedule_id=int(s_id),
-            current_date=datetime.now(),
-            available_days=available_days
-        )
-        await event.message.answer("unknown text", attachments=[ret_menu])
+        
+        # answer_text, answer_payloads = await display_schedule(datetime.now().isoformat(), s_id, "week", True, available_days)
+        answer_text = f"Расписание успешно добавлено! Его id: {s_id}"
+        answer_payloads = [succes_addition(s_id)]
+        await event.message.answer(answer_text, attachments=answer_payloads)
     if u_state.position == "schedule_add_from_token":
         q = event.message.body.text
-        print(q)
+        try:
+            s_id = int(q)
+        except TypeError:
+            await event.message.answer("⚠️Не верный ID⚠️")
+            return
         await event.message.answer("Добавляем расписание...")
-        # Logic here
-        s_id = 0
+        # logging.info(f"Connecting user {event.message.recipient.chat_id} to schedule {s_id}")
+        is_success = await connect_user_to_schedule(event.message.recipient.chat_id, s_id)
+        if not is_success:
+            await send_error("⚠️Не удалось добавить расписание в ваш аккаунт⚠️", event.message)
+            return
         available_days = await get_all_available_days(s_id)
-        ret_menu = schedule_display(
-            schedule_id=int(s_id),
-            current_date=datetime.now(),
-            available_days=available_days
-        )
-        await event.message.answer("unknown text 2", attachments=[ret_menu])
+
+        # answer_text, answer_payloads = await display_schedule(datetime.now().isoformat(), s_id, "week", True, available_days)
+        answer_text = f"Расписание успешно добавлено!"
+        answer_payloads = [succes_addition(s_id)]
+        await event.message.answer(answer_text, attachments=answer_payloads)
     if u_state.position == "schedule_add_from_std_university_search":
         q = event.message.body.text
         unis = await search_university(q)
         ret_menu = schedule_add_search_steps(
             search_q=q if q is not None else "", search_results=unis
         )
+        "Выберите университет" if len(unis) > 0 else "⚠️Ничего не найдено⚠️"
+        if q and len(unis) > 0:
+            ans_text = "☝Выберите университет🏫"
+        elif q:
+            ans_text = "⚠️Ничего не найдено, правильно имя ВУЗа пиши или добавь его⚠️"
+        else:
+            ans_text = "Начните печтатать название ВУЗа🏫"
         await event.message.answer(
-            "Выберите университет", attachments=[ret_menu]
+            ans_text, attachments=[ret_menu]
         )
         return
     if u_state.position == "schedule_add_from_std_name_search":
         q = event.message.body.text
         user = usrv.get_user(event.message.recipient.chat_id)
         if user is None:
+            await send_error("⚠️Произошла неизвестная ошибка, попробуйте позже⚠️", event.message)
             return
         schedules = await search_schedule_university(user.metadata["university_id"], q)
         ret_menu = schedule_add_search_steps(
             search_q=q if q is not None else "", search_results=schedules
         )
         await event.message.answer(
-            "Найденные расписания", attachments=[ret_menu]
+            "📅Найденные расписания", attachments=[ret_menu]
         )
         return
 
@@ -209,8 +228,9 @@ async def message_callback(event: MessageCallback):
         print(event.callback.payload)
         print("^" * 20 + "Parse exception" + "^" * 20)
     if payload["type"] == "schedule_list":
+        answer_text = "📌Это раздел с расписаниями.\nЗдесь вы можете перейти в интересующее вас расписвние и 👀посмотреть👀 его. \nНе пугайтесь, если здесь пусто, вы можете добавить новое расписание, воспользовавшись кнопкой 'Добавить'💗"
         answer_payloads = [schedule_list(
-            schedules=await get_schedule_list(event.callback.user.user_id),
+            schedules=await get_schedule_list(event.message.recipient.chat_id),
             # schedules=[
             #     Schedule(id=0, name="Расписание 1"),
             #     Schedule(id=1, name="Расписание 2"),
@@ -223,79 +243,52 @@ async def message_callback(event: MessageCallback):
             # ],
             page=int(payload.get("page", 0)),
         )]
+    elif payload["type"] == "share_current_schedule":
+        schedule_id = int(payload["s_id"])
+        answer_text = f"🛠️Id текущего расписания: {schedule_id}. 📨Отправьте его, другому пользователю, чтобы он смог добавить расписание."
+        answer_payloads = [share_schedule_menu(schedule_id, datetime.fromisoformat(payload["c_date"]))]
     elif payload["type"] == "schedule_display" or payload["type"] == "add_current_schedule":
         schedule_id = int(payload["s_id"])
         if payload["type"] == "add_current_schedule":
-            is_success = await connect_user_to_schedule(event.callback.user.chat_id, schedule_id)
+            is_success = await connect_user_to_schedule(event.message.recipient.chat_id, schedule_id)
             if not is_success:
-                await event.answer("Не удалось добавить расписание в ваш аккаунт")
+                await event.message.answer("⚠️Не удалось добавить расписание в ваш аккаунт⚠️")
                 
-        logging.info(f"{schedule_id} {datetime.fromisoformat(payload["c_date"]).isoformat() + "Z"}")
-        schedules = await get_schedule_list(event.callback.user.user_id)
-        picture_token = await get_schedule_token(schedule_id, datetime.fromisoformat(payload["c_date"]))
-        available_days = await get_all_available_days(schedule_id) 
+        schedules = await get_schedule_list(event.message.recipient.chat_id)
+        available_days = await get_all_available_days(schedule_id)
+        
 
-        answer_payloads = [schedule_display(
-            schedule_id=schedule_id,
-            current_date=datetime.fromisoformat(payload["c_date"]),
-            available_days=available_days,
-            is_schedule_added=schedule_id in [s.id for s in schedules]
-        ), {
-            "type": "image",
-            "payload": {
-                "token": picture_token
-            }
-        }]
-        answer_text = f"Date {payload['c_date']}"
+        answer_text, answer_payloads = await display_schedule(payload['c_date'], schedule_id, "week", schedule_id in [s.id for s in schedules], available_days)
     elif payload["type"] == "schedule_day_display":
         schedule_id = int(payload["s_id"])
-        picture_token = await get_schedule_token(schedule_id, datetime.fromisoformat(payload["c_date"]), flag="day")
-
-        answer_payloads = [schedule_day_display(
-            schedule_id=int(payload["s_id"]),
-            current_date=datetime.fromisoformat(payload["c_date"]),
-        ), {
-            "type": "image",
-            "payload": {
-                "token": picture_token
-            }
-        }]
-        answer_text = f"Date day {payload['c_date']}"
+        schedules = await get_schedule_list(event.message.recipient.chat_id)
+        available_days = await get_all_available_days(schedule_id)
+        answer_text, answer_payloads = await display_schedule(payload['c_date'], schedule_id, "day", schedule_id in [s.id for s in schedules], available_days)
     elif payload["type"] == "schedule_week_select":
+        schedule_id = int(payload["s_id"])
+        available_days = await get_all_available_days(schedule_id)
+        answer_text = "Выбор недели"
         answer_payloads = [schedule_week_select(
-            schedule_id=int(payload["s_id"]),
+            schedule_id=schedule_id,
             current_date=datetime.fromisoformat(payload["c_date"]),
-            busy_days=sorted(
-                list(
-                    set(
-                        [
-                            datetime(2025, random.randint(1, 12), random.randint(1, 28))
-                            for i in range(60)
-                        ]
-                    )
-                )
-            ),
+            busy_days=available_days,
         )]
-        answer_text = f"Date {payload['c_date']}"
+        
+        
+       
         # answer_menu = schedule_week_select(schedule_id=int(payload["s_id"]), current_date=datetime.fromisoformat(payload["c_date"]), busy_days=sorted([datetime(2025, 6, i) for i in range(3, 31)]))
     elif payload["type"] == "schedule_month_select":
+        schedule_id = int(payload["s_id"])
+        available_days = await get_all_available_days(schedule_id)
         answer_payloads = [schedule_month_select(
-            schedule_id=int(payload["s_id"]),
+            schedule_id=schedule_id,
             current_date=datetime.fromisoformat(payload["c_date"]),
-            busy_days=sorted(
-                list(
-                    set(
-                        [
-                            datetime(2025, random.randint(1, 12), random.randint(1, 28))
-                            for i in range(60)
-                        ]
-                    )
-                )
-            ),
+            busy_days=available_days,
         )]
-        answer_text = f"Date {payload['c_date']}"
+        answer_text = f"Выбор месяца"
         # answer_menu = schedule_month_select(schedule_id=int(payload["s_id"]), current_date=datetime.fromisoformat(payload["c_date"]), busy_days=sorted([datetime(2025, 6, i) for i in range(3, 31)]))
     elif payload["type"] == "add_schedule":
+        answer_text = "Текст добавления"
         answer_payloads = [add_schedule()]
         if event.message.recipient.chat_id is not None:
             update_user(
@@ -306,7 +299,7 @@ async def message_callback(event: MessageCallback):
     elif payload["type"] == "schedule_add_from_std":
         if event.message.recipient.chat_id is None:
             return
-        answer_text = "Введите название университета"
+        answer_text = "𓂃🪶Введите название университета🏫"
         answer_payloads = [schedule_add_search_steps()]
         update_user(
             UserMenuEntity(
@@ -316,6 +309,7 @@ async def message_callback(event: MessageCallback):
             )
         )
     elif payload["type"] == "schedule_add_from_token":
+        answer_text = "Текст добавлдения по токену"
         answer_payloads = [schedule_add_from_token()]
         if event.message.recipient.chat_id is None:
             return
@@ -338,7 +332,7 @@ async def message_callback(event: MessageCallback):
             )
         )
         answer_payloads = [schedule_add_from_ics()]
-        answer_text = "Загрузите ICS файл"
+        answer_text = "🚀Загрузите ICS файл📄"
     elif payload["type"] == "search_result":
         if event.message.recipient.chat_id is None:
             return
@@ -356,6 +350,7 @@ async def message_callback(event: MessageCallback):
                 )
             )
             answer_payloads = [schedule_add_from_ics_name_step()]
+            answer_text = "Поиск ВУЗа"
         if u_pos == "schedule_add_from_std_university_search":
             university_id = int(payload["result_payload"])
             update_user(
@@ -365,17 +360,20 @@ async def message_callback(event: MessageCallback):
                     metadata={**u_data.metadata, "university_id": university_id},
                 )
             )
-            answer_text = "Расписание ищешь?"
+            answer_text = "✍Введите название расписание (номер группы👥, аудиторию🚪 или имя преподавателя💼)"
             answer_payloads = [schedule_add_search_steps()]
         if u_pos == "schedule_add_from_std_name_search":
             s_id = int(payload["result_payload"])
-            # Adition logic here
             available_days = await get_all_available_days(s_id)
-            answer_payloads = [
-                schedule_display(
-                    schedule_id=s_id, current_date=datetime.now(),
-                    available_days=available_days
-                )]
+            update_user(
+                UserMenuEntity(
+                    id=event.message.recipient.chat_id,
+                    position="",
+                    metadata={},
+                )
+            )
+            schedules = await get_schedule_list(event.message.recipient.chat_id)
+            answer_text, answer_payloads = await display_schedule(datetime.now().isoformat(), s_id, "week", s_id in [s.id for s in schedules], available_days)
 
     elif payload["type"] == "search_add_entry":
         if event.message.recipient.chat_id is None:
@@ -385,7 +383,7 @@ async def message_callback(event: MessageCallback):
             return
         u_pos = u_data.position
         if u_pos == "schedule_add_from_ics_search_university":
-            await event.message.answer("Добавляем новый ВУЗ...")
+            await event.message.answer("🛠️Добавляем новый ВУЗ...🔨")
             university_name = payload["entry_name"]
             university_id = await create_university(university_name)
 
@@ -401,7 +399,7 @@ async def message_callback(event: MessageCallback):
             return
 
     elif payload["type"] == "settings":
-        answer_text = "настройки"
+        answer_text = "Coming soon!"
     else:
         answer_payloads = [startup_menu()]
         if event.message.recipient.chat_id is not None:
@@ -422,5 +420,18 @@ def update_user(new_data: UserMenuEntity) -> bool:
 
 
 def main_menu():
-    answer_text = "Здарова!"
+    answer_text = """📌Это главное меню.\nЧерез него ты можешь попасть в раздел 📅расписаний или перейти в ⚙️настройки.
+    """
     return answer_text, startup_menu()
+
+
+
+async def send_error(err_text:str, evt_msg: Message):
+    await evt_msg.answer(err_text, attachments=[startup_menu()])
+    update_user(
+        UserMenuEntity(
+            id=evt_msg.recipient.chat_id,
+            position="",
+            metadata={}
+        )
+    )

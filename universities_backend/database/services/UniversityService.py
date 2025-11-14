@@ -13,12 +13,13 @@ user = os.getenv("DB_USER")
 password = os.getenv("DB_PASS")
 host = os.getenv("DB_HOST")
 port = os.getenv("DB_PORT")
+db_name = os.getenv("DB_NAME")
 
 
 class UniversitiesService:
     def __init__(self) -> None:
         self.__connection = psycopg2.connect(
-            dbname="max_universities",
+            dbname=db_name,
             user=user,
             password=password,
             host=host,

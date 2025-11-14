@@ -17,6 +17,7 @@ services:
       PGDATA: /var/lib/postgresql/bot-data/bot-pgdata
     volumes:
       - bot-pgdata:/var/lib/postgresql/bot-data
+      - ./postgres_init:/docker-entrypoint-initdb.d
 
   max-frontend:
     build:
@@ -29,6 +30,7 @@ services:
       DB_HOST: postgres
       DB_PASS: PR9eZEXG2xERfpfq
       DB_PORT: 5432
+      DB_NAME: max_bot
       SCHEDULE_API: http://schedule_backend:8010/api/
       UNIVERSITIES_API: http://university_backend:8001/
     ports: ["8002:8000"]

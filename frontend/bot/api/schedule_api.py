@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 import logging
 import os
 import aiohttp
@@ -18,6 +18,7 @@ async def get_schedule_token(schedule_id: int, week_start: datetime, flag: str =
                 "week_start": week_start.isoformat() + "Z",
                 "flag": flag
             }) as response:
+            # TODO: add error handling
             result = await response.json()
             logging.info(str(result))
             return result["token"]
@@ -52,7 +53,7 @@ async def search_university(query: str) -> list[University]:
                 ))
     return finded_universities
 
-async def add_schedule_from_ics(ics_url: str, title: str, user: int, university: int) -> bool:
+async def add_schedule_from_ics(ics_url: str, title: str, user: int, university: int) -> int | None:
     async with aiohttp.ClientSession() as session:
         async with session.post(os.getenv("SCHEDULE_API") + "schedule",
                                 json={
@@ -62,8 +63,8 @@ async def add_schedule_from_ics(ics_url: str, title: str, user: int, university:
                                     "user_id": user
                                 }) as response:
             if response.status != 201:
-                return False
-            return True
+                return None
+            return (await response.json()).get("id")
 
 async def create_university(uni_name: str) -> int:
     async with aiohttp.ClientSession() as session:
@@ -78,12 +79,17 @@ async def search_schedule_university(uni_id: int, query: str) -> list[Schedule]:
             return schedule_list
 
 
-async def get_all_available_days(schedule_id: int) -> list[datetime]:
+async def get_all_available_days(schedule_id: int) -> list[date]:
     async with aiohttp.ClientSession() as session:
-        async with session.post(os.getenv("SCHEDULE_API") + f"time/all/{schedule_id}",) as response:
-            json_response = response
-            logging.info("response: ", json_response)
-            return list(map(lambda x: datetime.fromisoformat(x),  json_response))
+        async with session.get(os.getenv("SCHEDULE_API") + f"time/all/{schedule_id}",) as response:
+            json_response = await response.json()
+
+            logging.info(f"response: {json_response}")
+
+            return [
+                datetime.fromisoformat(d.replace("Z", "+00:00")).date()
+                for d in json_response
+            ]
 
 
 async def connect_user_to_schedule(user_id: int, schedule_id: int) -> bool:
@@ -92,7 +98,7 @@ async def connect_user_to_schedule(user_id: int, schedule_id: int) -> bool:
             "schedule_id":schedule_id,
             "user_id":user_id
             }) as response:
-            if response == 204:
+            if response.status == 204:
                 return True
             return False
             
