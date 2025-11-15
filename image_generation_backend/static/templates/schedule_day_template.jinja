@@ -1,0 +1,81 @@
+<style>
+    * {
+        margin: 0px;
+        font-family: "Stack Sans Headline", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        color: white;
+    }
+
+    .item-container {
+        background: #292929;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 7px 0 7px 10px;
+        border-radius: 10px;
+    }
+
+    .secondary-info-container {
+        display: flex;
+        gap: 10px;
+
+    }
+
+    .time-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: #008e92;
+        padding: 2px 10px;
+        border-radius: 4px;
+    }
+
+    .counter-container {
+        border: solid 1px #0006b8;
+        padding: 2px 10px;
+        border-radius: 4px;
+    }
+
+    .location-container {
+        display: flex;
+        gap: 5px;
+    }
+
+
+    .items-list {
+        display: flex;
+
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+
+        border-radius: 10px;
+    }
+
+    .day-container {
+        width: 100%;
+        height: 100%;
+        background: #1c1c1c;
+
+    }
+
+    .weekday-header{
+        text-align: center;
+        font-weight: bold;
+        font-size: 30px;
+    }
+</style>
+<div class="day-container ">
+    <h2 class="weekday-header">{{ day_item.weekday }}</h2>
+    <div class="items-list">
+        {% for sc_item in day_item.item_list %}
+            {% set idx = loop.index %}
+
+            {% include "schedule_item_template.jinja" %}
+        {% endfor %}
+    </div>
+</div>
+
