@@ -1,0 +1,93 @@
+version: "3.8"
+services:
+  postgresDatabase:
+    image: postgres:17
+    restart: always
+    pull_policy: always
+    container_name: postgres_database
+    networks:
+      bot-network:
+        aliases:
+          - postgres
+    environment:
+      POSTGRES_PASSWORD: PR9eZEXG2xERfpfq
+      PGDATA: /var/lib/postgresql/bot-data/bot-pgdata
+    volumes:
+      - bot-pgdata:/var/lib/postgresql/bot-data
+      - ./postgres_init:/docker-entrypoint-initdb.d
+
+  max-frontend:
+    restart: always
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      pull: true
+    environment:
+      MAX_TOKEN: ${MAX_API_KEY}
+      DB_USER: postgres
+      DB_HOST: postgres
+      DB_PASS: ${DB_PASSWORD}
+      DB_PORT: 5432
+      DB_NAME: max_bot
+      SCHEDULE_API: http://schedule_backend:8010/api/
+      UNIVERSITIES_API: http://university_backend:8001/
+    networks:
+      - bot-network
+
+  max-schedule-backend:
+    restart: always
+    build:
+      context: schedule_back
+      dockerfile: Dockerfile
+      pull: true
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: max_schedule
+      DB_SSLMODE: disable
+      DB_DRIVER: postgres
+      HTTP_PORT: 8010
+      HTTP_HOST: 0.0.0.0
+      defaultGenURLWeek: http://image-generator:8000/generate_week_schedule
+      defaultGenURLDay: http://image-generator:8000/generate_day_schedule
+    networks:
+      bot-network:
+        aliases:
+            - schedule_backend
+
+  max-schedule-image-generator:
+    restart: always
+    build:
+      context: image_generation_backend
+      dockerfile: Dockerfile
+      pull: true
+    environment:
+      MAX_TOKEN: ${MAX_API_KEY}
+    networks:
+      bot-network:
+        aliases:
+          - image-generator
+
+  max-universities-backend:
+    restart: always
+    build:
+      context: universities_backend
+      dockerfile: Dockerfile
+      pull: true
+    environment:
+      DB_USER: postgres
+      DB_HOST: postgres
+      DB_PASS: ${DB_PASSWORD}
+      DB_PORT: 5432
+    networks:
+      bot-network:
+        aliases:
+          - university_backend
+
+networks:
+  bot-network:
+    driver: bridge
+volumes:
+  bot-pgdata: { }
