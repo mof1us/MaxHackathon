@@ -350,7 +350,7 @@ async def message_callback(event: MessageCallback):
                 )
             )
             answer_payloads = [schedule_add_from_ics_name_step()]
-            answer_text = "Поиск ВУЗа"
+            answer_text = "Введите название расписания (группу, аудиторию или имя преподавателя)"
         if u_pos == "schedule_add_from_std_university_search":
             university_id = int(payload["result_payload"])
             update_user(
@@ -386,6 +386,7 @@ async def message_callback(event: MessageCallback):
             await event.message.answer("🛠️Добавляем новый ВУЗ...🔨")
             university_name = payload["entry_name"]
             university_id = await create_university(university_name)
+            answer_text = "Введите название расписания (например номер группы, номер аудитории или имя преподавателя)"
 
             update_user(
                 UserMenuEntity(
