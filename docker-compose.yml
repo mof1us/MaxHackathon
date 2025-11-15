@@ -10,7 +10,7 @@ services:
         aliases:
           - postgres
     environment:
-      POSTGRES_PASSWORD: PR9eZEXG2xERfpfq
+      POSTGRES_PASSWORD: ${DB_PASSWORD} ## Quick fix. Здесь была ошибка, не подставленна переменная(
       PGDATA: /var/lib/postgresql/bot-data/bot-pgdata
     volumes:
       - bot-pgdata:/var/lib/postgresql/bot-data
